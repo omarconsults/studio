@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Health Idol Africa',
+  title: 'Health Idol AI', // Updated site title
   description: 'Accessible Health Information for Africa',
 };
 

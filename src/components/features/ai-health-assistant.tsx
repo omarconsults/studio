@@ -87,7 +87,7 @@ export function AiHealthAssistant() {
                   Getting Answer...
                 </>
               ) : (
-                'Ask Assistant'
+                'Ask Health Idol' // Updated button text
               )}
             </Button>
           </form>

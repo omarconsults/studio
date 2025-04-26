@@ -7,7 +7,7 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between p-4">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
           <HeartPulse className="h-6 w-6" />
-          Health Idol Africa
+          Health Idol AI {/* Updated site name */}
         </Link>
         {/* Add navigation links here if needed in the future */}
         {/* <nav>
