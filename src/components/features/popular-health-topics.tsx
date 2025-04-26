@@ -10,11 +10,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, AlertTriangle, Utensils, Activity, ShieldCheck, Droplets, Baby, Brain, X } from 'lucide-react';
+import { Loader2, AlertTriangle, Utensils, Activity, ShieldCheck, Droplets, Baby, Brain, X, Info } from 'lucide-react';
 import { answerHealthQuestions } from '@/ai/flows/answer-health-questions'; // Reuse the existing flow
 
 type Topic = {
@@ -70,7 +69,17 @@ export function PopularHealthTopics() {
   const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // State for detailed explanation
+  const [detailedExplanation, setDetailedExplanation] = useState<string | null>(null);
+  const [isDetailedLoading, setIsDetailedLoading] = useState(false);
+  const [detailedError, setDetailedError] = useState<string | null>(null);
+
   const handleTopicClick = async (topic: Topic) => {
+    // Reset previous detailed state if a new topic is clicked
+    setDetailedExplanation(null);
+    setDetailedError(null);
+    setIsDetailedLoading(false);
+
     setSelectedTopic(topic);
     setIsLoading(true);
     setError(null);
@@ -88,6 +97,26 @@ export function PopularHealthTopics() {
     }
   };
 
+  const handleMoreInfoClick = async () => {
+    if (!selectedTopic || !explanation) return;
+
+    setIsDetailedLoading(true);
+    setDetailedError(null);
+
+    // Construct a query asking for more details based on the initial explanation
+    const detailedQuery = `Provide more detailed information about "${selectedTopic.title}". Please expand significantly on the points mentioned in the initial explanation provided below, offering more depth, practical examples, and actionable advice specifically relevant to the African context. Maintain accessible language but provide a comprehensive follow-up.\n\nInitial Explanation:\n"${explanation}"`;
+
+    try {
+      const result = await answerHealthQuestions({ question: detailedQuery });
+      setDetailedExplanation(result.answer);
+    } catch (err) {
+      console.error('Error fetching detailed explanation:', err);
+      setDetailedError('Sorry, something went wrong while getting more details. Please try again.');
+    } finally {
+      setIsDetailedLoading(false);
+    }
+  };
+
   const closeDialog = () => {
     setIsDialogOpen(false);
     // Reset state after dialog closes (optional, keeps it clean)
@@ -96,6 +125,9 @@ export function PopularHealthTopics() {
         setExplanation(null);
         setError(null);
         setIsLoading(false);
+        setDetailedExplanation(null); // Reset detailed state
+        setDetailedError(null);      // Reset detailed state
+        setIsDetailedLoading(false); // Reset detailed state
     }, 300); // Delay to allow fade-out animation
   }
 
@@ -103,7 +135,6 @@ export function PopularHealthTopics() {
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {topics.map((topic) => (
-           // Use DialogTrigger directly on the interactive element
            <Card
              key={topic.title}
              onClick={() => handleTopicClick(topic)}
@@ -127,7 +158,6 @@ export function PopularHealthTopics() {
 
       {/* Single Dialog for Explanations */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-         {/* We removed DialogTrigger from here as it's now on the Card */}
         <DialogContent className="sm:max-w-[600px]" onInteractOutside={closeDialog} onEscapeKeyDown={closeDialog}>
            <DialogHeader>
              <DialogTitle className="text-2xl text-primary">{selectedTopic?.title}</DialogTitle>
@@ -135,9 +165,10 @@ export function PopularHealthTopics() {
                 AI-generated explanation. Remember this is for informational purposes only and not a substitute for professional medical advice.
              </DialogDescription>
            </DialogHeader>
-           <div className="py-4 max-h-[60vh] overflow-y-auto">
+           <div className="py-4 max-h-[60vh] overflow-y-auto space-y-4">
+              {/* Initial Loading and Error */}
               {isLoading && (
-                <div className="flex items-center justify-center space-x-2">
+                <div className="flex items-center justify-center space-x-2 text-muted-foreground">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   <span>Loading explanation...</span>
                 </div>
@@ -149,8 +180,63 @@ export function PopularHealthTopics() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
+
+              {/* Initial Explanation */}
               {explanation && !isLoading && (
-                <p className="text-sm text-foreground whitespace-pre-wrap">{explanation}</p>
+                <div>
+                    <h4 className="font-semibold mb-2 text-primary">Overview:</h4>
+                    <p className="text-sm text-foreground whitespace-pre-wrap">{explanation}</p>
+                </div>
+              )}
+
+              {/* "More Information" Button */}
+              {explanation && !isLoading && !detailedExplanation && !detailedError && (
+                <div className="flex justify-center">
+                  <Button
+                      onClick={handleMoreInfoClick}
+                      variant="outline"
+                      size="sm"
+                      className="mt-4 border-primary text-primary hover:bg-primary/10"
+                      disabled={isDetailedLoading}
+                  >
+                      {isDetailedLoading ? (
+                          <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Getting More Details...
+                          </>
+                      ) : (
+                         <>
+                            <Info className="mr-2 h-4 w-4" />
+                            Need More Information?
+                         </>
+                      )}
+                  </Button>
+                 </div>
+              )}
+
+               {/* Detailed Loading */}
+              {isDetailedLoading && (
+                <div className="mt-4 flex items-center justify-center space-x-2 text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Loading more details...</span>
+                </div>
+              )}
+
+              {/* Detailed Error */}
+              {detailedError && (
+                <Alert variant="destructive" className="mt-4">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Error Fetching Details</AlertTitle>
+                    <AlertDescription>{detailedError}</AlertDescription>
+                </Alert>
+              )}
+
+              {/* Detailed Explanation */}
+              {detailedExplanation && !isDetailedLoading && (
+                  <div className="mt-6 border-t pt-4">
+                      <h4 className="font-semibold mb-2 text-primary">Detailed Information:</h4>
+                      <p className="text-sm text-foreground whitespace-pre-wrap">{detailedExplanation}</p>
+                  </div>
               )}
            </div>
           <DialogFooter>
