@@ -39,6 +39,8 @@ const prompt = ai.definePrompt({
   },
   prompt: `You are a helpful AI assistant providing health information to Africans with limited access to healthcare resources. Please answer the following question accurately and in a way that is easy to understand. Focus on providing information relevant to the African context, and avoid making assumptions about the availability of advanced medical treatments. Use simple, clear language.
 
+**Important Formatting Note:** When presenting information in lists, please use hyphens (-) at the beginning of each list item. Do not use asterisks (*).
+
 Question: {{{question}}}`,
 });
 
