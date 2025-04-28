@@ -8,6 +8,8 @@ After building this website, you might want to upload it to a hosting server to 
 
 ### Building the project
 
-The first step is to build the project for production. You can do this by running the following command in your terminal:
+The first step is to build the project. This process will create an optimized production build of your website. To start the build process, run the following command in your terminal:
+
+
 
 

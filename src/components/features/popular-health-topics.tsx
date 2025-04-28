@@ -27,37 +27,37 @@ const topics: Topic[] = [
   {
     title: 'Nutrition & Diet',
     icon: Utensils,
-    description: 'Healthy eating tips and guides.',
+    description: 'Discover healthy eating tips and guides.',
     query: 'Explain the basics of good nutrition and a healthy diet, focusing on accessible foods and common dietary challenges in African contexts. Keep it simple and easy to understand.',
   },
   {
     title: 'Exercise & Fitness',
     icon: Activity,
-    description: 'Stay active for better health.',
+    description: 'Learn how to stay active for better health.',
     query: 'Explain the importance of regular exercise and suggest simple, accessible fitness activities suitable for people in Africa. Keep it simple and easy to understand.',
   },
   {
     title: 'Common Illnesses',
     icon: ShieldCheck,
-    description: 'Info on malaria, typhoid, etc.',
+    description: 'Get info on common illnesses like malaria and typhoid.',
     query: 'Briefly explain common illnesses in Africa like malaria and typhoid, focusing on prevention and recognizing symptoms. Keep it simple and easy to understand. Do not give medical advice.',
   },
   {
     title: 'Hygiene & Sanitation',
     icon: Droplets,
-    description: 'Prevent diseases with good hygiene.',
+    description: 'Learn how to prevent diseases with good hygiene.',
     query: 'Explain the importance of basic hygiene practices like handwashing and sanitation for preventing diseases in African communities. Keep it simple and easy to understand.',
   },
   {
     title: 'Maternal & Child Health',
     icon: Baby,
-    description: 'Care for mothers and children.',
+    description: 'Find tips on care for mothers and children.',
     query: 'Provide simple, essential health tips for pregnant women and young children in Africa, focusing on nutrition and basic care. Keep it easy to understand. Do not give medical advice.',
   },
   {
     title: 'Mental Wellness',
     icon: Brain,
-    description: 'Tips for mental health and wellbeing.',
+    description: 'Discover tips for mental health and wellbeing.',
     query: 'Explain the importance of mental wellness and provide simple, culturally relevant tips for managing stress and promoting mental health in African contexts. Keep it easy to understand.',
   },
 ];
@@ -133,46 +133,49 @@ export function PopularHealthTopics() {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {topics.map((topic) => (
-           <Card
-             key={topic.title}
-             onClick={() => handleTopicClick(topic)}
-             className="h-full hover:shadow-lg transition-shadow duration-300 cursor-pointer group hover:border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg"
-             role="button" // Add role for accessibility
-             tabIndex={0} // Make it focusable
-             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTopicClick(topic); }} // Keyboard accessibility
-           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-lg font-medium text-primary group-hover:text-accent">
-                {topic.title}
-              </CardTitle>
-              <topic.icon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{topic.description}</p>
-            </CardContent>
-          </Card>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        {topics.map((topic, index) => (
+          <li key={topic.title} className="list-none">
+            <Card
+              onClick={() => handleTopicClick(topic)}
+              className="w-full h-full hover:shadow-lg transition-shadow duration-300 cursor-pointer group hover:border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') handleTopicClick(topic);
+              }}
+            >
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-lg font-medium text-primary group-hover:text-accent">
+                  {topic.title}
+                </CardTitle>
+                <topic.icon className="h-6 w-6 text-muted-foreground group-hover:text-primary" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground whitespace-normal">{topic.description}</p>
+              </CardContent>
+           </Card>
+          </li>
         ))}
-      </div>
+      </ul>
 
       {/* Single Dialog for Explanations */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px]" onInteractOutside={closeDialog} onEscapeKeyDown={closeDialog}>
-           <DialogHeader>
-             <DialogTitle className="text-2xl text-primary">{selectedTopic?.title}</DialogTitle>
-             <DialogDescription>
-                AI-generated explanation. Remember this is for informational purposes only and not a substitute for professional medical advice.
-             </DialogDescription>
-           </DialogHeader>
-           <div className="py-4 max-h-[60vh] overflow-y-auto space-y-4">
-              {/* Initial Loading and Error */}
-              {isLoading && (
-                <div className="flex items-center justify-center space-x-2 text-muted-foreground">
-                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  <span>Loading explanation...</span>
-                </div>
-              )}
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-primary">{selectedTopic?.title}</DialogTitle>
+            <DialogDescription>
+              Remember this is for informational purposes only and not a substitute for professional medical advice.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 max-h-[60vh] overflow-y-auto space-y-4">
+            {/* Initial Loading and Error */}
+            {isLoading && (
+              <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <span>Loading explanation...</span>
+              </div>
+            )}
               {error && (
                 <Alert variant="destructive">
                   <AlertTriangle className="h-4 w-4" />
@@ -184,10 +187,10 @@ export function PopularHealthTopics() {
               {/* Initial Explanation */}
               {explanation && !isLoading && (
                 <div>
-                    <h4 className="font-semibold mb-2 text-primary">Overview:</h4>
-                    <p className="text-sm text-foreground whitespace-pre-wrap">{explanation}</p>
+                  <h4 className="font-semibold mb-2 text-primary">Overview</h4>
+                  <p className="text-sm text-foreground whitespace-pre-wrap">{explanation}</p>
                 </div>
-              )}
+                )}
 
               {/* "More Information" Button */}
               {explanation && !isLoading && !detailedExplanation && !detailedError && (
@@ -203,12 +206,12 @@ export function PopularHealthTopics() {
                           <>
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Getting More Details...
-                          </>
+                           </>
                       ) : (
-                         <>
-                            <Info className="mr-2 h-4 w-4" />
-                            Need More Information?
-                         </>
+                        <>
+                           <Info className="mr-2 h-4 w-4" />
+                           Need More Information?
+                        </>
                       )}
                   </Button>
                  </div>
@@ -234,23 +237,23 @@ export function PopularHealthTopics() {
               {/* Detailed Explanation */}
               {detailedExplanation && !isDetailedLoading && (
                   <div className="mt-6 border-t pt-4">
-                      <h4 className="font-semibold mb-2 text-primary">Detailed Information:</h4>
-                      <p className="text-sm text-foreground whitespace-pre-wrap">{detailedExplanation}</p>
+                    <h4 className="font-semibold mb-2 text-primary">Detailed Information</h4>
+                    <p className="text-sm text-foreground whitespace-pre-wrap">{detailedExplanation}</p>
                   </div>
-              )}
+                  )}
            </div>
           <DialogFooter>
             <DialogClose asChild>
                <Button type="button" variant="secondary" onClick={closeDialog}>
-                  Close
+                Close
                </Button>
              </DialogClose>
           </DialogFooter>
-           {/* Add explicit close button for better accessibility */}
-            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-            </DialogClose>
+          {/* Add explicit close button for better accessibility */}
+          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
         </DialogContent>
       </Dialog>
     </>

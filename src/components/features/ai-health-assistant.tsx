@@ -53,7 +53,7 @@ export function AiHealthAssistant() {
           Ask a Health Question
         </CardTitle>
         <CardDescription>
-          Get health information relevant to the African context. Please remember this is not a substitute for professional medical advice.
+          Get health information relevant to your everyday life. Provided by Health Idol. Please remember this is not a substitute for professional medical advice.
         </CardDescription>
       </CardHeader>
       <CardContent>
