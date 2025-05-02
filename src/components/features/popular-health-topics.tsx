@@ -13,7 +13,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, AlertTriangle, Utensils, Activity, ShieldCheck, Droplets, Baby, Brain, X, Info } from 'lucide-react';
+import { Loader2, AlertTriangle, Utensils, Activity, ShieldCheck, Droplets, Baby, Brain, X, Info, Leaf } from 'lucide-react'; // Added Leaf icon
 import { answerHealthQuestions } from '@/ai/flows/answer-health-questions'; // Reuse the existing flow
 
 type Topic = {
@@ -28,38 +28,44 @@ const topics: Topic[] = [
     title: 'Nutrition & Diet',
     icon: Utensils,
     description: 'Discover healthy eating tips and guides.',
-    query: 'Explain the basics of good nutrition and a healthy diet, focusing on accessible foods and common dietary challenges in African contexts. Keep it simple and easy to understand.',
+    query: 'Explain the basics of good nutrition and a healthy diet, focusing on accessible foods and common dietary challenges in African contexts. Use hyphens (-) for list items. Keep it simple and easy to understand.',
   },
   {
     title: 'Exercise & Fitness',
     icon: Activity,
     description: 'Learn how to stay active for better health.',
-    query: 'Explain the importance of regular exercise and suggest simple, accessible fitness activities suitable for people in Africa. Keep it simple and easy to understand.',
+    query: 'Explain the importance of regular exercise and suggest simple, accessible fitness activities suitable for people in Africa. Use hyphens (-) for list items. Keep it simple and easy to understand.',
   },
   {
     title: 'Common Illnesses',
     icon: ShieldCheck,
     description: 'Get info on common illnesses like malaria and typhoid.',
-    query: 'Briefly explain common illnesses in Africa like malaria and typhoid, focusing on prevention and recognizing symptoms. Keep it simple and easy to understand. Do not give medical advice.',
+    query: 'Briefly explain common illnesses in Africa like malaria and typhoid, focusing on prevention and recognizing symptoms. Use hyphens (-) for list items. Keep it simple and easy to understand. Do not give medical advice.',
   },
   {
     title: 'Hygiene & Sanitation',
     icon: Droplets,
     description: 'Learn how to prevent diseases with good hygiene.',
-    query: 'Explain the importance of basic hygiene practices like handwashing and sanitation for preventing diseases in African communities. Keep it simple and easy to understand.',
+    query: 'Explain the importance of basic hygiene practices like handwashing and sanitation for preventing diseases in African communities. Use hyphens (-) for list items. Keep it simple and easy to understand.',
   },
   {
     title: 'Maternal & Child Health',
     icon: Baby,
     description: 'Find tips on care for mothers and children.',
-    query: 'Provide simple, essential health tips for pregnant women and young children in Africa, focusing on nutrition and basic care. Keep it easy to understand. Do not give medical advice.',
+    query: 'Provide simple, essential health tips for pregnant women and young children in Africa, focusing on nutrition and basic care. Use hyphens (-) for list items. Keep it easy to understand. Do not give medical advice.',
   },
   {
     title: 'Mental Wellness',
     icon: Brain,
     description: 'Discover tips for mental health and wellbeing.',
-    query: 'Explain the importance of mental wellness and provide simple, culturally relevant tips for managing stress and promoting mental health in African contexts. Keep it easy to understand.',
+    query: 'Explain the importance of mental wellness and provide simple, culturally relevant tips for managing stress and promoting mental health in African contexts. Use hyphens (-) for list items. Keep it easy to understand.',
   },
+  {
+    title: 'Environmental Health & Climate Change', // New Topic
+    icon: Leaf, // New Icon
+    description: 'Understand the impact of environment on health.',
+    query: 'Explain how environmental factors and climate change affect health in African contexts (e.g., air/water quality, extreme weather). Provide simple preventive tips. Use hyphens (-) for list items. Keep it easy to understand.',
+  }
 ];
 
 export function PopularHealthTopics() {
@@ -104,7 +110,7 @@ export function PopularHealthTopics() {
     setDetailedError(null);
 
     // Construct a query asking for more details based on the initial explanation
-    const detailedQuery = `Provide more detailed information about "${selectedTopic.title}". Please expand significantly on the points mentioned in the initial explanation provided below, offering more depth, practical examples, and actionable advice specifically relevant to the African context. Maintain accessible language but provide a comprehensive follow-up.\n\nInitial Explanation:\n"${explanation}"`;
+    const detailedQuery = `Provide more detailed information about "${selectedTopic.title}". Please expand significantly on the points mentioned in the initial explanation provided below, offering more depth, practical examples, and actionable advice specifically relevant to the African context. Maintain accessible language but provide a comprehensive follow-up. Use hyphens (-) for list items.\n\nInitial Explanation:\n"${explanation}"`;
 
     try {
       const result = await answerHealthQuestions({ question: detailedQuery });
@@ -133,7 +139,7 @@ export function PopularHealthTopics() {
 
   return (
     <>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full"> {/* Adjusted grid for 4 columns on xl screens */}
         {topics.map((topic, index) => (
           <li key={topic.title} className="list-none">
             <Card
